@@ -36,16 +36,16 @@ Some gene expression values are missing.
 
 **The goal of the challenge** is to use statistical models (*e.g.* linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
 
-Gene columns are named `r gs`.
-
+ - Biological attributes are:    `r names(d)[c(1:2,4)]`.
+ - Histological attribuites are: `r names(d)[c(5,3)]`
+ - Clinical attributes are:      `r names(d)[6:10]`
+ - Gene columns are named: `r gs`.
 
 ```{r results="verbatim", echo=TRUE}
 d = readRDS(file="data.rds")
 head(d)
 dim(d)
 ```
-
-
 
 ```{r results="verbatim", echo=TRUE}
 table(is.na(d[,gs]))
@@ -71,15 +71,20 @@ To participate, you need to:
 
 [1] In the participate window, go in the Files tab and download the starting kit.
 
-[2] Save the file contained into challenge_ssd2019_public_data in the same folder than the starting kit.
-
-[3] Go to the strating-kit directory and launch in R the following command: `rmarkdown::render("starting_kit.Rmd")`
+[2] Go to the strating-kit directory and launch in R the following command: `rmarkdown::render("starting_kit.Rmd")`
 
 It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
 
-[4] Generate a missing value prediction and submit in (zip file) in the Participate tab of the codalab challenge.
+[3] Generate a missing value prediction.
 
-Please see a detailed example of submission script in the *V. Submission* section
+[4] Submit in (zip file) in the Participate tab of the codalab challenge.
+
+[5] The metric used to evaluate prediction is the  **mean squared error** (MSE)
+
+$$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
+
+
+Please see a detailed example of submission script in the **Submission** section
 
 
 
@@ -123,7 +128,7 @@ For critical variation in your leader board score:
 
 ## Evaluation
 
-You will be evaluated on the report you provide (hability to clearly explain your approach, the methods used and the evolution of your prediction score), the codalab leader board score *will not** be used as a metric to evaluate your score. 
+You will be evaluated on the report you provide (hability to clearly explain your approach, the methods used and the evolution of your prediction score), the codalab leader board score **WILL NOT** be used as a metric to evaluate your score. 
 
 
 
@@ -146,52 +151,25 @@ sapply(gs, function(g){
 })
 ```
 
+```{r echo=TRUE, results="verbatim"}
+pred = sapply(gs, function(g, d){
+  m = lm(d[[g]] ~ d$tissue)
+  predict(m, d)
+}, d)
 
 
-```{r results="verbatim", echo=TRUE}
-# sort(table(e$tissue))
-# # ANOVA
-# m = lm(ATAD2~tissue, e)
-# ## model hypothesis ################## (**TODO, TP M1 SSD**) ##################
-# ## model results
-# summary(m)
-# anova(m)
-# # prediction
-# ```
-#
-# ```{r}
-# layout(matrix(1:2,1), respect=TRUE)
-# boxplot(ATAD2~tissue, e, las=2, main="ATAD2~tissue in training set")
-# boxplot(ATAD2_pred~tissue, e[idx,], las=2, main="prediction of ATAD2~tissue")
-# ```
-#
-#
-# ## Results
-#
-# Then, we export results for submission.
-#
-#
-# The metric used to evaluate prediction is the  **mean squared error** (MSE)
-#
-# $$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
-#
-#
-#
-# The prediction evaluation is done using the script *scoring_program/scoring.r* (provided).
-#
-# ```{r echo=TRUE, results="verbatim"}
-# # Export results
-
-# pred = pred
-# names(pred) = rownames(e)
-# saveRDS(pred, "results.rds")
-# zip_filename = paste0("results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
-# zip(zip_filename, "results.rds")
-# print(zip_filename)
-# ```
-#
-# ```{r, code = readLines("scoring_program/scoring.r"), results="verbatim"}
+saveRDS(pred, "results.rds")
+zip_filename = paste0("results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
+zip(zip_filename, "results.rds")
+print(zip_filename)
 ```
+
+```{r, code = readLines("scoring_program/scoring.r"), results="verbatim"}
+```
+
+
+
+
 
 
 

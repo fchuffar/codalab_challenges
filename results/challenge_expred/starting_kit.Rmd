@@ -1,0 +1,236 @@
+---
+title: "Gene Expression Prediction Challenge (expred)"
+subtitle: "Starting kit"
+author: "Florent Chuffart & Magali Richard"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: false
+---
+
+```{r label="header", echo=FALSE, eval=TRUE}
+knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, eval=TRUE, echo=FALSE, results="hide")
+
+gs = c(
+ "ATAD2", "SYCP3",
+ "BRDT", "BRD4", "NUTM1",
+ "MAGEB6", "TUBA3C",
+ "H19", "IGF2", "NNAT", "BLCAP",
+ "SMYD3", "MAP3K2", "KDR",
+ "TP53", "KRAS", "BRAF",
+ "FASTKD1", "ND2", "ND3", "ND4" 
+)
+
+```
+
+
+# Overview
+
+
+The challenge provides the data.frame `d` of non tumoral and tumoral tissues described by genes expression values, histological and clinical attributes.
+
+Some gene expression values are missing.
+
+**The goal of the challenge** is to use statistical models (*e.g.* linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
+
+Gene columns are named `r gs`.
+
+
+```{r results="verbatim", echo=TRUE}
+d = readRDS(file="data.rds")
+head(d)
+dim(d)
+```
+
+
+
+```{r results="verbatim", echo=TRUE}
+table(is.na(d[,gs]))
+```
+
+
+
+# Report 
+
+
+
+Cet examen prendra la forme d’un devoir maison similaire au TP que nous avons fait ensemble en séance 5.
+
+L’objectif sera de prédire des valeurs manquantes dans un jeu de données. Vous utiliserez la plateforme codalab pour évaluer vos méthodes. Le challenge sera ouvert pendant une semaine sur la plateforme.
+Vous travaillerez en équipes de 3 ou 4.
+Vous rendrez un rapport par équipe. Ce rapport devra être constitué de 3 parties, avec:
+
+I) Méthodes statistiques utilisées
+II) Evaluation critique de la progression du score
+III) Interprétation biologique
+
+Le rapport devra être rendu pour le mercredi 17 avril, avant 14h. 
+
+Bien sincèrement, 
+
+
+
+## Results
+
+  1. Descriptive statistics
+    - factors, number of NA...
+    - pretreatment
+  1. Methods
+    - Which function for linear model? (*e.g* lm, aov, rlm, glm, other...)
+    - Which model are your main models? (ND2 ~ sex+age+tissue_status)
+  2. Results
+    - Evaluation of your model (e.g. explained variance $R^2$, number of parameters, excluded
+    - What is your score on codalab?
+  3. Discussion
+    - Pros and cons each method  
+    - biological means
+
+
+
+
+
+
+
+
+
+## Method
+
+We dispose sample from many tissues, the idea is to evaluate if *tissue* could be a good predictor for *LRRC1 expression*.
+
+
+After checking model hypothesis (**TODO, TP M1 SSD**), we use ANOVA to predict missing values.
+
+
+```{r}
+# layout(1, respect=TRUE)
+# boxplot(LRRC1~tissue, e, las=2, main="LRRC1~tissue")
+# ```
+# ```{r results="verbatim", echo=TRUE}
+# sort(table(e$tissue))
+# # ANOVA
+# m = lm(LRRC1~tissue, e)
+# ## model hypothesis ################## (**TODO, TP M1 SSD**) ##################
+# ## model results
+# summary(m)
+# anova(m)
+# # prediction
+# e$LRRC1_pred = e$LRRC1
+# idx = is.na(e$LRRC1)
+# e[idx,]$LRRC1_pred = predict(m, e[idx,])
+# ```
+#
+# ```{r}
+# layout(matrix(1:2,1), respect=TRUE)
+# boxplot(LRRC1~tissue, e, las=2, main="LRRC1~tissue in training set")
+# boxplot(LRRC1_pred~tissue, e[idx,], las=2, main="prediction of LRRC1~tissue")
+# ```
+#
+#
+# ## Results
+#
+# Then, we export results for submission.
+#
+#
+# The metric used to evaluate prediction is the  **mean squared error** (MSE)
+#
+# $$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
+#
+#
+#
+# The prediction evaluation is done using the script *scoring_program/scoring.r* (provided).
+#
+# ```{r echo=TRUE, results="verbatim"}
+# # Export results
+# e_LRRC1 = e$LRRC1_pred
+# names(e_LRRC1) = rownames(e)
+# saveRDS(e_LRRC1, "results.rds")
+# zip_filename = paste0("results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
+# zip(zip_filename, "results.rds")
+# print(zip_filename)
+# ```
+#
+# ```{r, code = readLines("scoring_program/scoring.r"), results="verbatim"}
+```
+
+
+
+## Submission
+
+Produced results will be submitted to the "Linear Model Challenge" in the *Participate* tab.
+
+https://competitions.codalab.org/competitions/21774#participate
+
+How to submit results?
+Produced results will be submitted to the “Linear Model Challenge” in the Participate tab.
+
+
+
+
+
+
+
+
+# References 
+
+
+[NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene/55227
+
+[TCGA] Data are coming from the TCGA (The cancer genome atlas). 
+They were extracted from several cohorts of patients. 
+Here are TCGA Study Abbreviations corresponding to each cancer. 
+https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations
+
+[Codalab] https://competitions.codalab.org
+
+
+
+
+# Informations
+
+
+**How to participate?**
+
+The challenge is hosted on the codalab platform:
+
+https://competitions.codalab.org/competitions/21774?secret_key=a58ff8ad-c04c-4157-80fd-ac07c3473a68
+
+To participate, you need to:
+
+1- create an account on the codalab platform
+
+2- subscribe to the **Linear Model Challenge**
+
+
+**How to start?**
+
+First, download the **starting kit** in the *get_starting_kit* section.
+
+Then, go to the *strating-k* directory.
+
+Finally, launch in R the following command:
+
+```
+rmarkdown::render("starting_kit.Rmd")
+```
+
+It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
+
+**How to submit results?**
+
+Produced results will be submitted to the "Linear Model Challenge" in the *Participate* tab.
+  
+
+
+
+
+
+# Session Information
+
+```{r, results="verbatim"}
+sessionInfo()
+```
+
+

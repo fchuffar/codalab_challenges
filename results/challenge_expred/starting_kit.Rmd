@@ -14,6 +14,7 @@ output:
 ```{r label="header", echo=FALSE, eval=TRUE}
 knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, eval=TRUE, echo=FALSE, results="hide")
 
+d = readRDS(file="data.rds")
 gs = c(
  "ATAD2", "SYCP3",
  "BRD4", "BRDT", "NUTM1",
@@ -43,7 +44,8 @@ Some gene expression values are missing.
 
 ```{r results="verbatim", echo=TRUE}
 d = readRDS(file="data.rds")
-head(d)
+head(d[,gs])
+head(d[,1:10])
 dim(d)
 ```
 

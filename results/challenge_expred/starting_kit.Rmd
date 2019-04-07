@@ -61,7 +61,7 @@ dim(d)
 
 The challenge is hosted on the codalab platform:
 
-https://competitions.codalab.org/competitions/21360?secret_key=1b0893b2-c695-4c9b-ae33-334ac7a056ac
+https://competitions.codalab.org/competitions/22389?secret_key=a1edad61-8bfe-4fb4-a62e-c05ab4873411
 
 To participate, you need to:
 

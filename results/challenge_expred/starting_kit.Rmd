@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, 
 
 gs = c(
  "ATAD2", "SYCP3",
- "BRDT", "BRD4", "NUTM1",
+ "BRD4", "BRDT", "NUTM1",
  "MAGEB6", "TUBA3C",
  "H19", "IGF2", "NNAT", "BLCAP",
  "SMYD3", "MAP3K2", "KDR",
@@ -106,27 +106,27 @@ We dispose sample from many tissues, the idea is to evaluate if *tissue* could b
 
 ```{r}
 sapply(gs, function(g){
-  boxplot(d[[g]]~d$tissue, las=2, main=paste(g, "~ tissue"))  
+  boxplot(d[[g]] ~ d$tissue, las=2, main=paste(g, "~ tissue"))  
 })
 ```
+
+
+
 ```{r results="verbatim", echo=TRUE}
 # sort(table(e$tissue))
 # # ANOVA
-# m = lm(LRRC1~tissue, e)
+# m = lm(ATAD2~tissue, e)
 # ## model hypothesis ################## (**TODO, TP M1 SSD**) ##################
 # ## model results
 # summary(m)
 # anova(m)
 # # prediction
-# e$LRRC1_pred = e$LRRC1
-# idx = is.na(e$LRRC1)
-# e[idx,]$LRRC1_pred = predict(m, e[idx,])
 # ```
 #
 # ```{r}
 # layout(matrix(1:2,1), respect=TRUE)
-# boxplot(LRRC1~tissue, e, las=2, main="LRRC1~tissue in training set")
-# boxplot(LRRC1_pred~tissue, e[idx,], las=2, main="prediction of LRRC1~tissue")
+# boxplot(ATAD2~tissue, e, las=2, main="ATAD2~tissue in training set")
+# boxplot(ATAD2_pred~tissue, e[idx,], las=2, main="prediction of ATAD2~tissue")
 # ```
 #
 #
@@ -145,9 +145,10 @@ sapply(gs, function(g){
 #
 # ```{r echo=TRUE, results="verbatim"}
 # # Export results
-# e_LRRC1 = e$LRRC1_pred
-# names(e_LRRC1) = rownames(e)
-# saveRDS(e_LRRC1, "results.rds")
+
+# pred = pred
+# names(pred) = rownames(e)
+# saveRDS(pred, "results.rds")
 # zip_filename = paste0("results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
 # zip(zip_filename, "results.rds")
 # print(zip_filename)

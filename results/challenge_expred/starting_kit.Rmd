@@ -13,18 +13,7 @@ output:
 
 ```{r label="header", echo=FALSE, eval=TRUE}
 knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, eval=TRUE, echo=FALSE, results="hide")
-
 d = readRDS(file="data.rds")
-gs = c(
- "ATAD2", "SYCP3",
- "BRD4", "BRDT", "NUTM1",
- "MAGEB6", "TUBA3C",
- "H19", "IGF2", "NNAT", "BLCAP",
- "SMYD3", "MAP3K2", "KDR",
- "TP53", "KRAS", "BRAF",
- "FASTKD1", "ND2", "ND3", "ND4" 
-)
-
 ```
 
 
@@ -40,20 +29,33 @@ Some gene expression values are missing.
  - Biological attributes are:    `r names(d)[c(1:2,4)]`.
  - Histological attribuites are: `r names(d)[c(5,3)]`
  - Clinical attributes are:      `r names(d)[6:10]`
- - Gene columns are named: `r gs`.
+ - Gene columns are named:
 
-```{r results="verbatim", echo=TRUE}
-d = readRDS(file="data.rds")
-head(d[,gs])
-head(d[,1:10])
-dim(d)
+```{r, echo=TRUE}
+gs = c(
+  "ATAD2", "SYCP3",                # Chromatin 
+  "H19", "IGF2", "NNAT", "BLCAP",  # inprinted genes
+  "BRD4", "BRDT", "NUTM1",         # Testis restricted
+  "MAGEB6", "TUBA3C",              # Testis specific
+  "SMYD3", "MAP3K2", "KDR",        # K methyl transferase
+  "TP53", "KRAS", "BRAF",          # Tumor supressors
+  "FASTKD1", "ND2", "ND3", "ND4"   # Mitochondiral activity
+)
 ```
+
 
 ```{r results="verbatim", echo=TRUE}
 table(is.na(d[,gs]))
 ```
 
-# II. How to participate ?
+```{r results="verbatim", echo=TRUE}
+head(d[,gs])
+head(d[,1:10])
+dim(d)
+```
+
+
+# II. How to participate?
 
 ## Where to go? 
 
@@ -71,22 +73,23 @@ To participate, you need to:
 
 ## How to download data and submit results?
 
-[1] In the participate window, go in the Files tab and download the starting kit.
+[1] Go on the challenge page, in the *Learn the details* tab, in the *get_starting_kit* item and download the starting kit by clicking the *Starting Kit* button.
 
-[2] Go to the strating-kit directory and launch in R the following command: `rmarkdown::render("starting_kit.Rmd")`
+[2] On your local machine, unzip the just downloaded zip file *stating_kit.zip* and open *R* in the unziped strating-kit directory, (e.g. open *strating_kif.Rmd* with *RStudio*).
+
+[3] In the R console launch the following command: 
+
+`rmarkdown::render("starting_kit.Rmd")`
 
 It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
 
-[3] Generate a missing value prediction.
+[4] Generate a missing value prediction. Please see a detailed example of submission script in the **Submission** section.
 
-[4] Submit in (zip file) in the Participate tab of the codalab challenge.
+[5] Submit your prediction (zip file) in the *Participate* tab of the codalab challenge.
 
-[5] The metric used to evaluate prediction is the  **mean squared error** (MSE)
+The metric used to evaluate prediction is the  **mean squared error** (MSE)
 
 $$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
-
-
-Please see a detailed example of submission script in the **Submission** section
 
 
 
@@ -138,54 +141,97 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 
 
+# IV. Submission  (a detailed example)
 
-# IV. Few words about the dataset 
-
-We dispose sample from many tissues, the idea is to evaluate if *tissue* could be a good predictor for genes.
-
-
-**Try** ANOVA to predict missing values.
-
+## Generate a missing value prediction
 
 ```{r}
-sapply(gs, function(g){
-  boxplot(d[[g]] ~ d$tissue, las=2, main=paste(g, "~ tissue"))  
-})
+zip_filename = paste(sep="",  "results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
 ```
 
+In this exemple, we randomly fill missing values and generate *`r zip_filename`* submission file.
+
 ```{r echo=TRUE, results="verbatim"}
-pred = sapply(gs, function(g, d){
-  m = lm(d[[g]] ~ d$tissue)
-  predict(m, d)
-}, d)
-
-
+pred = as.matrix(d[,gs])
+pred[] = sample(na.omit(pred), nrow(pred)*ncol(pred), replace=TRUE)
+pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
 saveRDS(pred, "results.rds")
-zip_filename = paste0("results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
 zip(zip_filename, "results.rds")
 print(zip_filename)
 ```
 
-```{r, code = readLines("scoring_program/scoring.r"), results="verbatim"}
+
+
+In this exemple, for each gene, we use a simple linear to predict missing values.
+
+```{r echo=TRUE, results="verbatim"}
+pred = sapply(gs, function(g, d){
+  m = lm(d[[g]] ~ d$tissue)
+  # m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
+  predict(m, d)
+}, d)
+pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
 ```
 
+```{r}
+# In this exemple, we use a simple linear to predict all missing values.
+# m = lm(as.matrix(d[,gs]) ~ d$tissue)
+# summary(m)
+# anova(m)
+# pred = predict(m, d)
+# pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
+```
+
+## Submit zip file
+
+Submit your *`r zip_filename`* submission file in the *Participate* tab of the codalab challenge by clicking the *Submit* button.
+
+## Evaluation
+
+The metric used to evaluate prediction is the mean squared error (MSE) coded is the following scoring program (provided).
+
+```{r echo=TRUE, results="verbatim"}
+source("scoring_program/scoring.r")
+```
+
+The *STATUS* become : 
+
+  - Submitted	
+  - Running
+  - Finished
+
+When it’s finished, score is given in the column *SCORE* and details for report could be downloaded by clicking *Download output from scoring step*.
 
 
+# V. Few words about the dataset 
 
 
+```{r, eval=FALSE}
+m = lm(as.matrix(d[,gs]) ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
+data = as.matrix(d[,gs])
+data[is.na(d[,gs])] = predict(m, d)[is.na(d[,gs])]
 
+pca = prcomp(data, scale=TRUE)
+v = pca$sdev * pca$sdev
+p = v / sum(v) * 100
+layout(matrix(1:6,2, byrow=FALSE), respect=TRUE)
+barplot(p)
+i=3
+j=2
+plot(pca$x[,i], pca$x[,j], xlab=paste(sep="", "PC", i, "(", signif(p[i], 3), "%)"), ylab=paste(sep="",  "PC", j, "(", signif(p[j], 3), "%)"), pch=".")
+i=1
+j=3
+plot(pca$x[,i], pca$x[,j], xlab=paste(sep="",  "PC", i, "(", signif(p[i], 3), "%)"), ylab=paste(sep="",  "PC", j, "(", signif(p[j], 3), "%)"), pch=".")
+i=1
+j=2
+plot(pca$x[,i], pca$x[,j], xlab=paste(sep="",  "PC", i, "(", signif(p[i], 3), "%)"), ylab=paste(sep="",  "PC", j, "(", signif(p[j], 3), "%)"))
+```
 
-# V. Submission, a detailed example
-
-Produced results will be submitted to the "Linear Model Challenge" in the *Participate* tab.
-
-https://competitions.codalab.org/competitions/21774#participate
-
-How to submit results?
-Produced results will be submitted to the “Linear Model Challenge” in the Participate tab.
-
-
-
+```{r eval=FALSE}
+sapply(gs, function(g){
+  boxplot(d[[g]] ~ d$tissue, las=2, main=paste(g, "~ tissue"))  
+})
+```
 
 
 
@@ -194,7 +240,7 @@ Produced results will be submitted to the “Linear Model Challenge” in the Pa
 # VI. References 
 
 
-[NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene/55227
+[NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene
 
 [TCGA] Data are coming from the TCGA (The cancer genome atlas). 
 They were extracted from several cohorts of patients. 
@@ -203,7 +249,9 @@ https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbrevia
 
 [Codalab] https://competitions.codalab.org
 
+[R] https://cran.r-project.org
 
+[RStudio] https://www.rstudio.com
 
 
 

@@ -27,7 +27,7 @@ gs = c(
 ```
 
 
-# Overview
+# I. General information
 
 
 The challenge provides the data.frame `d` of non tumoral and tumoral tissues described by genes expression values, histological and clinical attributes.
@@ -51,52 +51,88 @@ dim(d)
 table(is.na(d[,gs]))
 ```
 
+# II. How to participate ?
 
+## Where to go? 
 
-# Report 
+The challenge is hosted on the codalab platform:
 
+https://competitions.codalab.org/competitions/21360?secret_key=1b0893b2-c695-4c9b-ae33-334ac7a056ac
 
+To participate, you need to:
 
-Cet examen prendra la forme d’un devoir maison similaire au TP que nous avons fait ensemble en séance 5.
+1- create an acount on the codalab platform
 
-L’objectif sera de prédire des valeurs manquantes dans un jeu de données. Vous utiliserez la plateforme codalab pour évaluer vos méthodes. Le challenge sera ouvert pendant une semaine sur la plateforme.
-Vous travaillerez en équipes de 3 ou 4.
-Vous rendrez un rapport par équipe. Ce rapport devra être constitué de 3 parties, avec:
+2- subscribe to the *expred* challenge
 
-I) Méthodes statistiques utilisées
-II) Evaluation critique de la progression du score
-III) Interprétation biologique
+3- constitute teams (up to 4 people) and design a team coordinator on the platform
 
-Le rapport devra être rendu pour le mercredi 17 avril, avant 14h. 
+## How to download data and submit results?
 
-Bien sincèrement, 
+[1] In the participate window, go in the Files tab and download the starting kit.
 
+[2] Save the file contained into challenge_ssd2019_public_data in the same folder than the starting kit.
 
+[3] Go to the strating-kit directory and launch in R the following command: `rmarkdown::render("starting_kit.Rmd")`
 
-## Results
+It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
 
-  1. Descriptive statistics
-    - factors, number of NA...
-    - pretreatment
-  1. Methods
-    - Which function for linear model? (*e.g* lm, aov, rlm, glm, other...)
-    - Which model are your main models? (ND2 ~ sex+age+tissue_status)
-  2. Results
-    - Evaluation of your model (e.g. explained variance $R^2$, number of parameters, excluded
-    - What is your score on codalab?
-  3. Discussion
-    - Pros and cons each method  
-    - biological means
+[4] Generate a missing value prediction and submit in (zip file) in the Participate tab of the codalab challenge.
+
+Please see a detailed example of submission script in the *V. Submission* section
 
 
 
+# III. Report / Evaluation
+
+## Report
+
+The goal will be to predict missing values in a gene expression dataset. 
+
+You will use the codalab platform to evaluate your methods. 
+
+The challenge will be open for a week on the platform.
+You will work in teams of 3 or 4.
+
+You will report by team. 
+The report must be returned by Wednesday, April 17th, before 2pm.
+
+This report should consist of 3 parts, with:
+
+**A) Statistical methods used**
+
+*For instance* :
+
+- Descriptive statistics (actors, number of NA, pretreatment...)
+- Methods: Which function for linear model? (*e.g* lm, aov, rlm, glm, other...), Which model are your main models? (ND2 ~ sex+age+tissue_status)...
+
+**B) Critical evaluation of the progression of the score**
+
+*For instance* :
+For critical variation in your leader board score:
+
+- Evaluation of your model (e.g. explained variance $R^2$, number of parameters...)
+- What is your score on codalab?
+    
+**C) Discussion and biological interpretation**
+
+*For instance* :
+
+- Pros and cons each method  
+- Biological meaning (gene expression correlations, tisuus status...)
+
+## Evaluation
+
+You will be evaluated on the report you provide (hability to clearly explain your approach, the methods used and the evolution of your prediction score), the codalab leader board score *will not** be used as a metric to evaluate your score. 
 
 
 
 
 
 
-## Method
+
+
+# IV. Few words about the dataset 
 
 We dispose sample from many tissues, the idea is to evaluate if *tissue* could be a good predictor for genes.
 
@@ -159,7 +195,7 @@ sapply(gs, function(g){
 
 
 
-## Submission
+# V. Submission, a detailed example
 
 Produced results will be submitted to the "Linear Model Challenge" in the *Participate* tab.
 
@@ -175,7 +211,7 @@ Produced results will be submitted to the “Linear Model Challenge” in the Pa
 
 
 
-# References 
+# VI. References 
 
 
 [NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene/55227
@@ -190,46 +226,10 @@ https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbrevia
 
 
 
-# Informations
-
-
-**How to participate?**
-
-The challenge is hosted on the codalab platform:
-
-https://competitions.codalab.org/competitions/21774?secret_key=a58ff8ad-c04c-4157-80fd-ac07c3473a68
-
-To participate, you need to:
-
-1- create an account on the codalab platform
-
-2- subscribe to the **Linear Model Challenge**
-
-
-**How to start?**
-
-First, download the **starting kit** in the *get_starting_kit* section.
-
-Then, go to the *strating-k* directory.
-
-Finally, launch in R the following command:
-
-```
-rmarkdown::render("starting_kit.Rmd")
-```
-
-It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
-
-**How to submit results?**
-
-Produced results will be submitted to the "Linear Model Challenge" in the *Participate* tab.
-  
 
 
 
-
-
-# Session Information
+# VII. Session Information
 
 ```{r, results="verbatim"}
 sessionInfo()

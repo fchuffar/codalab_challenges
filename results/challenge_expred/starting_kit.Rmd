@@ -98,17 +98,18 @@ Bien sincèrement,
 
 ## Method
 
-We dispose sample from many tissues, the idea is to evaluate if *tissue* could be a good predictor for *LRRC1 expression*.
+We dispose sample from many tissues, the idea is to evaluate if *tissue* could be a good predictor for genes.
 
 
-After checking model hypothesis (**TODO, TP M1 SSD**), we use ANOVA to predict missing values.
+**Try** ANOVA to predict missing values.
 
 
 ```{r}
-# layout(1, respect=TRUE)
-# boxplot(LRRC1~tissue, e, las=2, main="LRRC1~tissue")
-# ```
-# ```{r results="verbatim", echo=TRUE}
+sapply(gs, function(g){
+  boxplot(d[[g]]~d$tissue, las=2, main=paste(g, "~ tissue"))  
+})
+```
+```{r results="verbatim", echo=TRUE}
 # sort(table(e$tissue))
 # # ANOVA
 # m = lm(LRRC1~tissue, e)

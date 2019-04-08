@@ -9,7 +9,7 @@ In the provided example 2, for each gene, we use a simple linear to predict miss
 
 
 
-```{r}
+```{r label="generate_zip_file"}
 ### DO NOT CHANGE THIS PART
 d = readRDS("data.rds")
 gs = colnames(d)[11:31]
@@ -51,7 +51,7 @@ The *STATUS* become :
   - Running
   - Finished
 
-```{r echo=TRUE, results="verbatim",}
+```{r}
 source("scoring_program/scoring.r")
 ```
 

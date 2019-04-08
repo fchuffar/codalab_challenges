@@ -19,9 +19,6 @@ knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, 
 
 ```{r child='overview.Rmd'}
 ```
-```{r warning=FALSE, message=FALSE, error=FALSE}
-rmarkdown::render("overview.Rmd")
-```
 
 
 # II. How to participate?
@@ -125,9 +122,6 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 
 ```{r child='submission_script.Rmd'}
-```
-```{r warning=FALSE, message=FALSE, error=FALSE}
-rmarkdown::render("submission_script.Rmd", output_file="get_starting_kit.html")
 ```
 
 

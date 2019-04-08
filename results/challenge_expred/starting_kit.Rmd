@@ -61,6 +61,9 @@ To participate, you need to:
 
 ```{r child='submission_script.Rmd'}
 ```
+```{r}
+source("scoring_program/scoring.r")
+```
 
 
 

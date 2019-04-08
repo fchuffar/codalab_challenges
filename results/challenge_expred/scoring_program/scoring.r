@@ -6,12 +6,12 @@
 # SCORING
 scoring_function = function(truth, pred, prefix=NULL){
   nbna = sum(is.na(pred))
-  propNA = nbna/length(truth)
+  pNA = nbna/length(truth)
 
   lm = lm(truth~pred)
   res = residuals(lm)
   mse = mean(res^2)
-  sc = list(MSE=mse, propNA=nbna/length(truth))
+  sc = list(MSE=mse, pNA=nbna/length(truth))
   if (!is.null(prefix)) {
     names(sc) = paste(names(sc), prefix, sep="_")
   }
@@ -91,7 +91,7 @@ if (ADMIN_SESSION) {
 
   sub_na_coord = list(
     list(GLOBAL=na_coord),
-    list(NORMAL=na_coord[d_full[na_coord$sample,]$tissue_status=="normal",]),
+    list(NORMAL=na_coord[d_full[na_coord$sample,]$tissue_status=="normal",]), 
     lapply(gs, function(g) {na_coord[na_coord$gene==g,]}),
     lapply(proj, function(pr) {na_coord[d_full[na_coord$sample,]$project %in% pr,]})
   )
@@ -103,7 +103,6 @@ if (ADMIN_SESSION) {
 
   
   scores = sapply(names(sub_na_coord), function(n){
-    print(n)
     pred = apply(sub_na_coord[[n]], 1, function(l) {
       predg_full[l[["sample"]], l[["gene"]]]
     })
@@ -117,7 +116,7 @@ if (ADMIN_SESSION) {
     for (grp in colnames(scores)) {
       for (ind in rownames(scores)) {
         key = paste(grp, ind, sep="_")
-        cat(sprintf(paste(key, ":%f\n", sep=""), scores[ind,grp]), file=output_file, append=!(grp==colnames(scores)[1]&ind==rownames(scores)[1]))              
+        cat(sprintf(paste(key, ": %f\n", sep=""), scores[ind,grp]), file=output_file, append=!(grp==colnames(scores)[1]&ind==rownames(scores)[1]))              
       }
     }
     cat(readLines(output_file), sep = "\n")     
@@ -143,9 +142,12 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
 
 
   write_board = function(scores) {
-    output_file="board.yml"
-        cat(paste("leaderboard:                                        \n" , sep=""), file=output_file, append=FALSE)              
+    output_file = "competition.yaml"
+    cat("\n", file=output_file, append=FALSE)
+    foo = sapply(readLines("competition_head.yaml"), cat, "\n", file=output_file, append=TRUE)
+        cat(paste("leaderboard:                                        \n" , sep=""), file=output_file, append=TRUE)              
         cat(paste("  columns:                                          \n" , sep=""), file=output_file, append=TRUE)              
+    i = 1
     for (grp in colnames(scores)) {
       for (ind in rownames(scores)) {
         key = paste(grp, ind, sep="_")
@@ -158,8 +160,11 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
         cat(paste("        label: Results                              \n" , sep=""), file=output_file, append=TRUE)              
         cat(paste("        rank: 1                                     \n" , sep=""), file=output_file, append=TRUE)              
         }        
-        cat(paste("      rank: ",as.numeric(ind=="MSE"), "             \n" , sep=""), file=output_file, append=TRUE)              
+        cat(paste("      rank: ",i , "                                 \n" , sep=""), file=output_file, append=TRUE)
+        # cat(paste("      rank: ",as.numeric(ind=="MSE"), "             \n" , sep=""), file=output_file, append=TRUE)
+        # cat(paste("      rank: 1                                       \n" , sep=""), file=output_file, append=TRUE)
         cat(paste("      sort: asc                                     \n" , sep=""), file=output_file, append=TRUE)              
+        i = i+1
       }
     }
         cat(paste("  leaderboards:           \n" , sep=""), file=output_file, append=TRUE)              
@@ -167,7 +172,7 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
         cat(readLines(output_file), sep = "\n")     
   }
   write_board(scores)
-
+  
   # zip the bundle
   zip_filename = "reference_data.zip"
   zip(zip_filename, "data_full.rds")

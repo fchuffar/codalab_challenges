@@ -1,0 +1,31 @@
+title: Gene Expression Prediction Challenge (expred)
+description: The challenge provides the data.frame d of non tumoral and tumoral tissues described by genes expression values, histological and clinical attributes. Some gene expression values are missing. The goal of the challenge is to use statistical models (e.g. linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
+start_date: 2019-04-01 9:45:00+00:00
+end_date: 2019-04-17 14:00:00+00:00
+competition_docker_image: raphbacher/codalabsurvival
+image: logo.png
+has_registration: true
+force_submission_to_leaderboard: true
+disallow_leaderboard_modifying: false
+enable_detailed_results: true
+admin_names: raphbacher,magrichard,FlorentC
+html:
+  evaluation: evaluation.html
+  overview: overview.html
+  get_starting_kit: get_starting_kit.html
+  terms: terms.html
+  data: data.html
+phases:
+  0:
+    auto_migration: false
+    color: blue
+    description: ''
+    is_scoring_only: true
+    label: Exploration
+    max_submissions: 1000000
+    max_submissions_per_day: 1000000
+    phasenumber: 1
+    reference_data: reference_data.zip
+    scoring_program: scoring_program.zip
+    starting_kit: starting_kit.zip
+    start_date: 2019-01-20 14:58:19+00:00

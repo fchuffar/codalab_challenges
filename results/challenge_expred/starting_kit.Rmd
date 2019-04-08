@@ -77,6 +77,13 @@ To participate, you need to:
 
 [2] On your local machine, unzip the just downloaded zip file *stating_kit.zip* and open *R* in the unziped strating-kit directory, (e.g. open *strating_kif.Rmd* with *RStudio*).
 
+This folder contains:
+
+- A data.rds file containing the data.
+- A scoring program folder containing the program to compute the scoring (for you information).
+- A starting_kit.Rmd corresponding to the vignette of the Challenge (all useful information can be found here).
+- A submission_script.R to modify and to use to submit your predictions.
+
 [3] In the R console launch the following command: 
 
 `rmarkdown::render("starting_kit.Rmd")`
@@ -145,6 +152,8 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 ## Generate a missing value prediction
 
+Please use the `submission_script.R` contained in the `starting_k` folder as a template to write, run and save your code.
+
 ```{r}
 zip_filename = paste(sep="",  "results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
 ```
@@ -152,25 +161,30 @@ zip_filename = paste(sep="",  "results_", format(Sys.time(), format="%m_%d_%Y_%s
 In this exemple, we randomly fill missing values and generate *`r zip_filename`* submission file.
 
 ```{r echo=TRUE, results="verbatim"}
+# Predict the values
 pred = as.matrix(d[,gs])
 pred[] = sample(na.omit(pred), nrow(pred)*ncol(pred), replace=TRUE)
 pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
+# Save and export the results
 saveRDS(pred, "results.rds")
 zip(zip_filename, "results.rds")
 print(zip_filename)
 ```
 
-
-
 In this exemple, for each gene, we use a simple linear to predict missing values.
 
 ```{r echo=TRUE, results="verbatim"}
+# Predict the values
 pred = sapply(gs, function(g, d){
   m = lm(d[[g]] ~ d$tissue)
   # m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
   predict(m, d)
 }, d)
 pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
+# Save and export the results
+saveRDS(pred, "results.rds")
+zip(zip_filename, "results.rds")
+print(zip_filename)
 ```
 
 ```{r}

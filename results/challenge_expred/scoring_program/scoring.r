@@ -180,6 +180,7 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
   zip(zip_filename, "data.rds")
   zip(zip_filename, "starting_kit.Rmd")
   zip(zip_filename, "overview.Rmd")
+  zip(zip_filename, "evaluation.Rmd")
   zip(zip_filename, "submission_script.Rmd")
   zip(zip_filename, "scoring_program/metadata")
   zip(zip_filename, "scoring_program/scoring.r")

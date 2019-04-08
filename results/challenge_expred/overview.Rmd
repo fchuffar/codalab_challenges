@@ -4,7 +4,7 @@ Some gene expression values are missing.
 
 **The goal of the challenge** is to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
 
-```{r}
+```{r echo=FALSE}
 d = readRDS(file="data.rds")
 ```
 

@@ -1,0 +1,63 @@
+# submission_script.r 
+# Authors: Magali Richard (CNRS), Florent Chuffart (INSERM)
+#
+#---------------------------------------------
+
+
+Please use the `submission_script.r` contained in the `starting_kit` folder as a template to write, run and save your code.
+
+
+## Generate a missing value prediction
+
+In the provided example 1, we randomly fill missing values and generate *`r zip_filename`* submission file.
+
+In the provided example 2, for each gene, we use a simple linear to predict missing values.
+
+## Submit zip file
+
+Submit your *`r zip_filename`* submission file in the *Participate* tab of the codalab challenge by clicking the *Submit* button.
+
+
+```{r eval=FALSE}
+### DO NOT CHANGE THIS PART
+d = readRDS("data.rds")
+gs = colnames(d)[11:31]
+
+### PUT YOUR SCRIPT HERE
+# Example 1
+pred = as.matrix(d[,gs])
+pred[] = sample(na.omit(pred), nrow(pred)*ncol(pred), replace=TRUE)
+
+# Example 2
+pred = sapply(gs, function(g, d){
+ m = lm(d[[g]] ~ d$tissue)
+#  m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
+ predict(m, d)
+}, d)
+
+### DO NOT CHANGE THIS PART
+pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
+saveRDS(pred, "results.rds")
+zip_filename = paste(sep="",  "results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
+zip(zip_filename, "results.rds")
+print(zip_filename)
+```
+
+## Evaluation
+
+The metric used to evaluate prediction is the mean squared error (MSE) coded is the following scoring program (provided).
+
+The *STATUS* become : 
+
+  - Submitted	
+  - Running
+  - Finished
+
+```{r echo=TRUE, results="verbatim"}
+source("scoring_program/scoring.r")
+```
+
+When it’s finished, score is given in the column *SCORE* and details for report could be downloaded by clicking *Download output from scoring step*.
+
+
+

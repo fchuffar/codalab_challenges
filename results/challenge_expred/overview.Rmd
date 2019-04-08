@@ -1,0 +1,35 @@
+The challenge provides the data.frame `d` of non tumoral and tumoral tissues described by genes expression values, histological and clinical attributes.
+
+Some gene expression values are missing.
+
+**The goal of the challenge** is to use statistical models (*e.g.* linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
+
+```{r}
+d = readRDS(file="data.rds")
+```
+
+ - Biological attributes are:    `r names(d)[c(1:2,4)]`.
+ - Histological attribuites are: `r names(d)[c(5,3)]`
+ - Clinical attributes are:      `r names(d)[6:10]`
+ - Gene columns are named:
+
+```{r, echo=TRUE}
+gs = c(
+  "ATAD2", "SYCP3",                # Chromatin 
+  "H19", "IGF2", "NNAT", "BLCAP",  # inprinted genes
+  "BRD4", "BRDT", "NUTM1",         # Testis restricted
+  "MAGEB6", "TUBA3C",              # Testis specific
+  "SMYD3", "MAP3K2", "KDR",        # K methyl transferase
+  "TP53", "KRAS", "BRAF",          # Tumor supressors
+  "FASTKD1", "ND2", "ND3", "ND4"   # Mitochondiral activity
+)
+```
+
+
+```{r results="verbatim", echo=TRUE}
+table(is.na(d[,gs]))
+head(d[,gs])
+head(d[,1:10])
+dim(d)
+```
+

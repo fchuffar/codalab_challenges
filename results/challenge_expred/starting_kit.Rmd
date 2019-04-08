@@ -13,45 +13,14 @@ output:
 
 ```{r label="header", echo=FALSE, eval=TRUE}
 knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, eval=TRUE, echo=FALSE, results="hide")
-d = readRDS(file="data.rds")
 ```
 
+# I. Overview
 
-# I. General information
-
-
-The challenge provides the data.frame `d` of non tumoral and tumoral tissues described by genes expression values, histological and clinical attributes.
-
-Some gene expression values are missing.
-
-**The goal of the challenge** is to use statistical models (*e.g.* linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
-
- - Biological attributes are:    `r names(d)[c(1:2,4)]`.
- - Histological attribuites are: `r names(d)[c(5,3)]`
- - Clinical attributes are:      `r names(d)[6:10]`
- - Gene columns are named:
-
-```{r, echo=TRUE}
-gs = c(
-  "ATAD2", "SYCP3",                # Chromatin 
-  "H19", "IGF2", "NNAT", "BLCAP",  # inprinted genes
-  "BRD4", "BRDT", "NUTM1",         # Testis restricted
-  "MAGEB6", "TUBA3C",              # Testis specific
-  "SMYD3", "MAP3K2", "KDR",        # K methyl transferase
-  "TP53", "KRAS", "BRAF",          # Tumor supressors
-  "FASTKD1", "ND2", "ND3", "ND4"   # Mitochondiral activity
-)
+```{r child='overview.Rmd'}
 ```
-
-
-```{r results="verbatim", echo=TRUE}
-table(is.na(d[,gs]))
-```
-
-```{r results="verbatim", echo=TRUE}
-head(d[,gs])
-head(d[,1:10])
-dim(d)
+```{r warning=FALSE, message=FALSE, error=FALSE}
+rmarkdown::render("overview.Rmd")
 ```
 
 
@@ -73,16 +42,17 @@ To participate, you need to:
 
 ## How to download data and submit results?
 
-[1] Go on the challenge page, in the *Learn the details* tab, in the *get_starting_kit* item and download the starting kit by clicking the *Starting Kit* button.
+[1] Go on the challenge page, in the `Learn the details` tab, in the `get_starting_kit` item and download the starting kit by clicking the `Starting Kit` button.
 
-[2] On your local machine, unzip the just downloaded zip file *stating_kit.zip* and open *R* in the unziped strating-kit directory, (e.g. open *strating_kif.Rmd* with *RStudio*).
+[2] On your local machine, unzip the just downloaded zip file `stating_kit.zip` and open `R` in the unziped strating-kit directory, (e.g. open *strating_kit.Rmd* with *RStudio*).
 
-This folder contains:
 
-- A data.rds file containing the data.
+The unziped strating-kit directory contains:
+
+- A `data.rds` file containing the data.
 - A scoring program folder containing the program to compute the scoring (for you information).
-- A starting_kit.Rmd corresponding to the vignette of the Challenge (all useful information can be found here).
-- A submission_script.R to modify and to use to submit your predictions.
+- A `starting_kit.Rmd` corresponding to the vignette of the Challenge (all useful information can be found here).
+- A `submission_script.r` to modify and to use to submit your predictions.
 
 [3] In the R console launch the following command: 
 
@@ -97,6 +67,7 @@ It procudes the file "starting_kit.html" that explains how to analyse data and p
 The metric used to evaluate prediction is the  **mean squared error** (MSE)
 
 $$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
+
 
 
 
@@ -148,38 +119,21 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 
 
+
+
 # IV. Submission  (a detailed example)
 
-Please use the `submission_script.r` contained in the `starting_kit` folder as a template to write, run and save your code.
 
-```{r, code=readLines("submission_script.r"), echo=TRUE}
+```{r child='submission_script.Rmd'}
+```
+```{r warning=FALSE, message=FALSE, error=FALSE}
+rmarkdown::render("submission_script.Rmd", output_file="get_starting_kit.html")
 ```
 
-## Generate a missing value prediction
 
-In the provided example 1, we randomly fill missing values and generate *`r zip_filename`* submission file.
 
-In the provided example 2, for each gene, we use a simple linear to predict missing values.
 
-## Submit zip file
 
-Submit your *`r zip_filename`* submission file in the *Participate* tab of the codalab challenge by clicking the *Submit* button.
-
-## Evaluation
-
-The metric used to evaluate prediction is the mean squared error (MSE) coded is the following scoring program (provided).
-
-```{r echo=TRUE, results="verbatim"}
-source("scoring_program/scoring.r")
-```
-
-The *STATUS* become : 
-
-  - Submitted	
-  - Running
-  - Finished
-
-When it’s finished, score is given in the column *SCORE* and details for report could be downloaded by clicking *Download output from scoring step*.
 
 
 # V. Few words about the dataset 

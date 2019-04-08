@@ -139,7 +139,7 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
 
   # rmarkdown::render("overview.Rmd")
   # rmarkdown::render("evaluation.Rmd")
-  # rmarkdown::render("submission_script.Rmd")
+  # rmarkdown::render("submission_script.Rmd", output_file="data.html")
 
 
   write_board = function(scores) {

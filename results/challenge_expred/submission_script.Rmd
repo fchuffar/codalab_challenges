@@ -47,13 +47,17 @@ source("scoring_program/scoring.r")
 ```
 
 On the codalab challenge web page, The *STATUS* become : 
+
   - Submitting
   - Submitted	
   - Running
   - Finished
 
+When it’s finished: 
 
-When it’s finished, score is given in the column *SCORE* and details for report could be downloaded by clicking *Download output from scoring step*.
+  - You refresh the page and see you score in the column *SCORE* 
+  - Details for report could be downloaded by clicking *Download output from scoring step*.
+  - Leader borad is updated in the `Results` tab.
 
 
 

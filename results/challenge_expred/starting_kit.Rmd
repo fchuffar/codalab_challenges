@@ -136,7 +136,7 @@ For critical variation in your leader board score:
 *For instance* :
 
 - Pros and cons each method  
-- Biological meaning (gene expression correlations, tisuus status...)
+- Biological meaning (gene expression correlations, tissues status...)
 
 ## Evaluation
 
@@ -150,51 +150,16 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 # IV. Submission  (a detailed example)
 
+Please use the `submission_script.r` contained in the `starting_kit` folder as a template to write, run and save your code.
+
+```{r, code=readLines("submission_script.r"), echo=TRUE}
+```
+
 ## Generate a missing value prediction
 
-Please use the `submission_script.R` contained in the `starting_k` folder as a template to write, run and save your code.
+In the provided example 1, we randomly fill missing values and generate *`r zip_filename`* submission file.
 
-```{r}
-zip_filename = paste(sep="",  "results_", format(Sys.time(), format="%m_%d_%Y_%s"), ".zip")
-```
-
-In this exemple, we randomly fill missing values and generate *`r zip_filename`* submission file.
-
-```{r echo=TRUE, results="verbatim"}
-# Predict the values
-pred = as.matrix(d[,gs])
-pred[] = sample(na.omit(pred), nrow(pred)*ncol(pred), replace=TRUE)
-pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
-# Save and export the results
-saveRDS(pred, "results.rds")
-zip(zip_filename, "results.rds")
-print(zip_filename)
-```
-
-In this exemple, for each gene, we use a simple linear to predict missing values.
-
-```{r echo=TRUE, results="verbatim"}
-# Predict the values
-pred = sapply(gs, function(g, d){
-  m = lm(d[[g]] ~ d$tissue)
-  # m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
-  predict(m, d)
-}, d)
-pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
-# Save and export the results
-saveRDS(pred, "results.rds")
-zip(zip_filename, "results.rds")
-print(zip_filename)
-```
-
-```{r}
-# In this exemple, we use a simple linear to predict all missing values.
-# m = lm(as.matrix(d[,gs]) ~ d$tissue)
-# summary(m)
-# anova(m)
-# pred = predict(m, d)
-# pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
-```
+In the provided example 2, for each gene, we use a simple linear to predict missing values.
 
 ## Submit zip file
 

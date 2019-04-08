@@ -21,14 +21,14 @@ if (CHALLENGER_SESSION) {
 }
 
 # read ref data (if on the server or admin)
-rds_filename = paste0(input, ref, "/data_full.rds")
-ADMIN_SESSION = file.exists(rds_filename)
+data_full_filename = paste0(input, ref, "/data_full.rds")
+ADMIN_SESSION = file.exists(data_full_filename)
 print(paste("ADMIN_SESSION:", ADMIN_SESSION)) 
 
   
 if (ADMIN_SESSION) {
   # Ground truth
-  d_full = readRDS(rds_filename)
+  d_full = readRDS(data_full_filename)
   gs = colnames(d_full)[11:31]
   d_full = as.matrix(d_full[,gs])
 
@@ -123,6 +123,7 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
   zip_filename = "starting_kit.zip"
   zip(zip_filename, "starting_kit.Rmd")
   zip(zip_filename, "data.rds")
+  zip(zip_filename, "submission_script.r")
   zip(zip_filename, "scoring_program/metadata")
   zip(zip_filename, "scoring_program/scoring.r")
   zip(zip_filename, "scoring_program/scoring.r")

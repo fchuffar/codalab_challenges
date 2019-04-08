@@ -1,0 +1,29 @@
+
+[1] Go on the challenge page, in the `Learn the details` tab, in the `get_starting_kit` item and download the starting kit by clicking the `Starting Kit` button.
+
+[2] On your local machine, unzip the just downloaded zip file `stating_kit.zip` and open *R* in the unziped `strating_kit` directory, (e.g. open `strating_kit.Rmd` with *RStudio*).
+
+
+The unziped strating-kit directory contains:
+
+- A `data.rds` file containing the data.
+- A scoring program folder containing the program to compute the scoring (for you information).
+- A `starting_kit.Rmd` corresponding to the vignette of the Challenge (all useful information can be found here).
+- A `submission_script.Rmd` to modify and to use to submit your predictions.
+
+[3] In the R console launch the following command: 
+
+```
+rmarkdown::render("starting_kit.Rmd")
+```
+
+It i) procudes the file "starting_kit.html" that explains how to analyse data and produce results ii) generates a simple prediction for missing expression value. 
+The `submission_script.Rmd` script is in charge of this part. 
+In the future, you will adapt this script and try a more complex predictions.
+
+[4] Now, let’s submit your prediction (zip file) in the `Participate` tab of the codalab challenge.
+
+The metric used to evaluate prediction is the  **mean squared error** (MSE)
+
+$$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
+

@@ -21,13 +21,18 @@ knitr::opts_chunk$set(collapse=TRUE, comment = "#>", fig.width=9, fig.height=6, 
 ```
 
 
+
+
+
+
+
+
+
 # II. How to participate?
 
 ## Where to go? 
 
-The challenge is hosted on the codalab platform:
-
-https://competitions.codalab.org/competitions/22389?secret_key=a1edad61-8bfe-4fb4-a62e-c05ab4873411
+The challenge is hosted on the codalab platform: https://competitions.codalab.org/
 
 To participate, you need to:
 
@@ -37,38 +42,34 @@ To participate, you need to:
 
 3- constitute teams (up to 4 people) and design a team coordinator on the platform
 
-## How to download data and submit results?
+## How to start?
 
-[1] Go on the challenge page, in the `Learn the details` tab, in the `get_starting_kit` item and download the starting kit by clicking the `Starting Kit` button.
-
-[2] On your local machine, unzip the just downloaded zip file `stating_kit.zip` and open `R` in the unziped strating-kit directory, (e.g. open *strating_kit.Rmd* with *RStudio*).
-
-
-The unziped strating-kit directory contains:
-
-- A `data.rds` file containing the data.
-- A scoring program folder containing the program to compute the scoring (for you information).
-- A `starting_kit.Rmd` corresponding to the vignette of the Challenge (all useful information can be found here).
-- A `submission_script.r` to modify and to use to submit your predictions.
-
-[3] In the R console launch the following command: 
-
-`rmarkdown::render("starting_kit.Rmd")`
-
-It procudes the file "starting_kit.html" that explains how to analyse data and produce results.
-
-[4] Generate a missing value prediction. Please see a detailed example of submission script in the **Submission** section.
-
-[5] Submit your prediction (zip file) in the *Participate* tab of the codalab challenge.
-
-The metric used to evaluate prediction is the  **mean squared error** (MSE)
-
-$$MSE = \frac{1}{n}\sum_{i=1}^n{(Y_i-\widehat{Y}_i )^2}$$
+```{r child='evaluation.Rmd'}
+```
 
 
 
 
-# III. Report / Evaluation
+
+
+
+
+
+
+
+# III. Submission (example)
+
+```{r child='submission_script.Rmd'}
+```
+
+
+
+
+
+
+
+
+# IV. Report / Evaluation
 
 ## Report
 
@@ -118,22 +119,29 @@ You will be evaluated on the report you provide (hability to clearly explain you
 
 
 
-# IV. Submission  (a detailed example)
+# V. References 
 
 
-```{r child='submission_script.Rmd'}
-```
+[NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene
+
+[TCGA] Data are coming from the TCGA (The cancer genome atlas). 
+They were extracted from several cohorts of patients. 
+Here are TCGA Study Abbreviations corresponding to each cancer. 
+https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations
+
+[Codalab] https://competitions.codalab.org
+
+[R] https://cran.r-project.org
+
+[RStudio] https://www.rstudio.com
 
 
 
-
-
-
-
-# V. Few words about the dataset 
 
 
 ```{r, eval=FALSE}
+# SUPPLEMENTAL 
+## Few words about the dataset 
 m = lm(as.matrix(d[,gs]) ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
 data = as.matrix(d[,gs])
 data[is.na(d[,gs])] = predict(m, d)[is.na(d[,gs])]
@@ -164,27 +172,10 @@ sapply(gs, function(g){
 
 
 
-# VI. References 
-
-
-[NCBI/GENE] https://www.ncbi.nlm.nih.gov/gene
-
-[TCGA] Data are coming from the TCGA (The cancer genome atlas). 
-They were extracted from several cohorts of patients. 
-Here are TCGA Study Abbreviations corresponding to each cancer. 
-https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations
-
-[Codalab] https://competitions.codalab.org
-
-[R] https://cran.r-project.org
-
-[RStudio] https://www.rstudio.com
 
 
 
-
-
-# VII. Session Information
+# Session Information
 
 ```{r, results="verbatim"}
 sessionInfo()

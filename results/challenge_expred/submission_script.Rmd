@@ -1,4 +1,4 @@
-Please use the `submission_script.r` contained in the `starting_kit` folder as a template to write, run and save your code.
+Please use the `submission_script.Rmd` contained in the `starting_kit` folder as a template to write, run and save your code.
 
 
 ## Generate a missing value prediction
@@ -9,7 +9,7 @@ In the provided example 2, for each gene, we use a simple linear to predict miss
 
 
 
-```{r label="generate_zip_file"}
+```{r echo=TRUE, results="verbnatim", label="generate_zip_file"}
 ### DO NOT CHANGE THIS PART
 d = readRDS("data.rds")
 gs = colnames(d)[11:31]
@@ -19,12 +19,12 @@ gs = colnames(d)[11:31]
 pred = as.matrix(d[,gs])
 pred[] = sample(na.omit(pred), nrow(pred)*ncol(pred), replace=TRUE)
 
-# # Example 2
-# pred = sapply(gs, function(g, d){
-#  m = lm(d[[g]] ~ d$tissue)
-# #  m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
-#  predict(m, d)
-# }, d)
+# Example 2
+pred = sapply(gs, function(g, d){
+ m = lm(d[[g]] ~ d$tissue)
+#  m = lm(d[[g]] ~ d$age+d$sex+d$tissue+d$tissue_status+d$project)
+ predict(m, d)
+}, d)
 
 ### DO NOT CHANGE THIS PART, it needs *pred* vartiable
 pred[!is.na(as.matrix(d[,gs]))] = NA # Sparse, only submit NA values!
@@ -38,22 +38,20 @@ print(zip_filename)
 
 It generates *`r zip_filename`* submission file.
 
-Submit your *`r zip_filename`* submission file in the *Participate* tab of the codalab challenge by clicking the *Submit* button.
+Submit the zip submission file in the `Participate` tab of the codalab challenge by clicking the `Submit` button.
 
-
-## Evaluation
-
-The metric used to evaluate prediction is the mean squared error (MSE) coded is the following scoring program (provided).
-
-The *STATUS* become : 
-
-  - Submitted	
-  - Running
-  - Finished
+The metric used to evaluate prediction is the mean squared error (MSE) coded with the provided `scoring_function()`.
 
 ```{r}
 source("scoring_program/scoring.r")
 ```
+
+On the codalab challenge web page, The *STATUS* become : 
+  - Submitting
+  - Submitted	
+  - Running
+  - Finished
+
 
 When it’s finished, score is given in the column *SCORE* and details for report could be downloaded by clicking *Download output from scoring step*.
 

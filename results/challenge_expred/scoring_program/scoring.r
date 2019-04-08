@@ -3,6 +3,29 @@
 #
 #---------------------------------------------
 
+# SCORING
+scoring_function = function(truth, pred, prefix=NULL){
+  nbna = sum(is.na(pred))
+  propNA = nbna/length(truth)
+
+  lm = lm(truth~pred)
+  res = residuals(lm)
+  mse = mean(res^2)
+  sc = list(MSE=mse, propNA=nbna/length(truth))
+  if (!is.null(prefix)) {
+    names(sc) = paste(names(sc), prefix, sep="_")
+  }
+  return(sc)
+}
+
+
+
+
+
+
+
+### SESSION
+### DO NOT CHANGE THIS PART
 # define input/output/ref/res from command line args (should in principle never be changed)
 args = commandArgs(TRUE)
 CHALLENGER_SESSION = length(args) == 0
@@ -26,6 +49,13 @@ ADMIN_SESSION = file.exists(data_full_filename)
 print(paste("ADMIN_SESSION:", ADMIN_SESSION)) 
 
   
+  
+  
+  
+  
+  
+  
+#  EVALUATION
 if (ADMIN_SESSION) {
   # Ground truth
   d_full = readRDS(data_full_filename)
@@ -40,6 +70,8 @@ if (ADMIN_SESSION) {
   na_coord = data.frame(sample=rownames(dg_full)[gr[idx,1]], gene=gs[gr[idx,2]], stringsAsFactors=FALSE)
 
   # generate seed with the secret (dg_full) 
+  # Score compute on 10000 prediction vector, 
+  # always the same but unkown.
   set.seed(round(sum(dg_full[,ncol(dg_full)])))
   idx_r2 = sample(1:nrow(na_coord), ceiling(nb_na/2))
   na_coord = na_coord[idx_r2,]
@@ -48,20 +80,6 @@ if (ADMIN_SESSION) {
   # Load submited results from participant
   predg_full = readRDS(paste0(input, res, "results.rds"))
 
-  # Define scoring function
-  score = function(truth, pred, prefix=NULL){
-    nbna = sum(is.na(pred))
-    propNA = nbna/length(truth)
-
-    lm = lm(truth~pred)
-    res = residuals(lm)
-    mse = mean(res^2)
-    sc = list(propNA=nbna/length(truth), MSE=mse)
-    if (!is.null(prefix)) {
-      names(sc) = paste(names(sc), prefix, sep="_")
-    }
-    return(sc)
-  }
 
   names(gs)=gs
   proj = unique(d_full$project)
@@ -92,7 +110,7 @@ if (ADMIN_SESSION) {
     truth = apply(sub_na_coord[[n]], 1, function(l) {
       dg_full[l[["sample"]], l[["gene"]]]
     })
-    score(truth, pred)
+    scoring_function(truth, pred)
   })
 
   write_scores = function(scores, output_file) {
@@ -109,13 +127,23 @@ if (ADMIN_SESSION) {
 }
 
 
+
+
+
+
+
+# EXPORT BUNDLE
 # export codallab bundle (if local run with reference data, it means if admin run)
 if (ADMIN_SESSION & CHALLENGER_SESSION) {
   print("Export codallab bundle, beause of (CHALLENGER_SESSION & ADMIN_SESSION).")
 
+  # rmarkdown::render("overview.Rmd")
+  # rmarkdown::render("evaluation.Rmd")
+  # rmarkdown::render("submission_script.Rmd")
+
+
   write_board = function(scores) {
     output_file="board.yml"
-    i = 1
         cat(paste("leaderboard:                                        \n" , sep=""), file=output_file, append=FALSE)              
         cat(paste("  columns:                                          \n" , sep=""), file=output_file, append=TRUE)              
     for (grp in colnames(scores)) {
@@ -127,21 +155,20 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
         cat(paste("      leaderboard: ", ifelse(FIRST_ELEMENT,"&","*"), "id001\n" , sep=""), file=output_file, append=TRUE)              
         if (FIRST_ELEMENT) {
 
-        cat(paste("        label: ", key, "                            \n" , sep=""), file=output_file, append=TRUE)              
+        cat(paste("        label: Results                              \n" , sep=""), file=output_file, append=TRUE)              
         cat(paste("        rank: 1                                     \n" , sep=""), file=output_file, append=TRUE)              
         }        
-        cat(paste("      rank: ", i, "                                 \n" , sep=""), file=output_file, append=TRUE)              
+        cat(paste("      rank: ",as.numeric(ind=="MSE"), "             \n" , sep=""), file=output_file, append=TRUE)              
         cat(paste("      sort: asc                                     \n" , sep=""), file=output_file, append=TRUE)              
-        i = i+1
       }
     }
         cat(paste("  leaderboards:           \n" , sep=""), file=output_file, append=TRUE)              
-        cat(paste("    GLOBAL_MSE: *id001    \n" , sep=""), file=output_file, append=TRUE)              
+        cat(paste("    Results: *id001    \n" , sep=""), file=output_file, append=TRUE)              
         cat(readLines(output_file), sep = "\n")     
   }
   write_board(scores)
 
-
+  # zip the bundle
   zip_filename = "reference_data.zip"
   zip(zip_filename, "data_full.rds")
 
@@ -150,11 +177,11 @@ if (ADMIN_SESSION & CHALLENGER_SESSION) {
   zip(zip_filename, "scoring_program/scoring.r")    
 
   zip_filename = "starting_kit.zip"
-  zip(zip_filename, "starting_kit.Rmd")
   zip(zip_filename, "data.rds")
-  zip(zip_filename, "submission_script.r")
+  zip(zip_filename, "starting_kit.Rmd")
+  zip(zip_filename, "overview.Rmd")
+  zip(zip_filename, "submission_script.Rmd")
   zip(zip_filename, "scoring_program/metadata")
-  zip(zip_filename, "scoring_program/scoring.r")
   zip(zip_filename, "scoring_program/scoring.r")
   zip(zip_filename, ".Rhistory")
 

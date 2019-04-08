@@ -2,7 +2,7 @@ The challenge provides the data.frame `d` of non tumoral and tumoral tissues des
 
 Some gene expression values are missing.
 
-**The goal of the challenge** is to use statistical models (*e.g.* linear models) to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
+**The goal of the challenge** is to predict missing gene expression values using provided gene expression values, histological and clinical attributes.
 
 ```{r}
 d = readRDS(file="data.rds")
@@ -27,9 +27,12 @@ gs = c(
 
 
 ```{r results="verbatim", echo=TRUE}
-table(is.na(d[,gs]))
-head(d[,gs])
-head(d[,1:10])
 dim(d)
+head(d[,1:5])
+sum(is.na(d[,1:5]))
+head(d[,6:10])
+table(is.na(d[,6:10]))
+head(d[,gs[1:6]])
+table(is.na(d[,gs]))
 ```
 
